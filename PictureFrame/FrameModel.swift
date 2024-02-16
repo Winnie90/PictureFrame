@@ -46,19 +46,33 @@ class FrameModel: ObservableObject {
         }
     }
     
-    private let windowName: String
+    @Published var nextImage: Bool = true
+    private let frameId: String
     
-    init(windowName: String?) {
-        self.windowName = windowName ?? UUID().uuidString
+    init(frameId: String) {
+        self.frameId = frameId
         if let image = loadImage() {
             imageState = .success(Image(uiImage: image))
         }
+        NotificationCenter.default.addObserver(self, selector: #selector(defaultsChanged), name: UserDefaults.didChangeNotification, object: nil)
     }
     
-    func nextImage() -> String? {
+    @objc func defaultsChanged() {
+        if nextImageId != nil {
+            nextImage = true
+        } else {
+            nextImage = false
+        }
+    }
+    
+    var nextImageId: String? {
         let imageIndex = loadImageIndex()
-        guard let currentIndex = imageIndex.firstIndex(of: windowName), let nextIndex = imageIndex[safe: currentIndex + 1] else { return nil }
+        guard let currentIndex = imageIndex.firstIndex(of: frameId), let nextIndex = imageIndex[safe: currentIndex + 1] else { return nil }
         return nextIndex
+    }
+    
+    func closeImage() {
+        deleteImage()
     }
     
     // MARK: - Private Methods
@@ -68,18 +82,26 @@ class FrameModel: ObservableObject {
               let data = uiImage.jpegData(compressionQuality: 1.0) else { return }
         let encoded = try! PropertyListEncoder().encode(data)
         
-        let pictureName = "PictureFrame-\(windowName)"
-        UserDefaults.standard.set(encoded, forKey: pictureName)
+        UserDefaults.standard.set(encoded, forKey: frameId)
         
+        deleteImage()
         var imageIndexes = loadImageIndex()
-        imageIndexes.append(pictureName)
+        imageIndexes.append(frameId)
         save(imageIndexes)
     }
     
     private func loadImage() -> UIImage? {
-        guard let data = UserDefaults.standard.data(forKey: windowName) else { return nil }
+        guard let data = UserDefaults.standard.data(forKey: frameId) else { return nil }
         let decoded = try! PropertyListDecoder().decode(Data.self, from: data)
         return UIImage(data: decoded)
+    }
+    
+    private func deleteImage() {
+        var imageIndexes = loadImageIndex()
+        imageIndexes.removeAll { imageId in
+            imageId == frameId
+        }
+        save(imageIndexes)
     }
     
     private func loadImageIndex() -> [String] {

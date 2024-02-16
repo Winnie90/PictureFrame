@@ -15,7 +15,7 @@ struct FrameView: View {
     var body: some View {
         FrameImage(frameModel: viewModel)
             .onAppear {
-                if let uuid = viewModel.nextImage() {
+                if let uuid = viewModel.nextImageId {
                     openWindow(id: "photo-frame", value: uuid)
                 }
             }
@@ -29,8 +29,11 @@ struct FrameView: View {
                     } label: {
                         Image(systemName: "photo.badge.plus.fill")
                             .font(.system(size: 28))
-                    }.disabled(viewModel.nextImage() != nil)
+                    }.disabled(viewModel.nextImageId != nil)
                 }
+            }
+            .onDisappear {
+                viewModel.closeImage()
             }
     }
 }

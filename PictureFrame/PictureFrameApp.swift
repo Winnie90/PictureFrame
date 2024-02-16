@@ -11,15 +11,15 @@ import SwiftUI
 struct PictureFrameApp: App {
     var body: some Scene {
         WindowGroup {
-            FrameView(viewModel: FrameModel(windowName: loadImageIndex()))
+            FrameView(viewModel: FrameModel(frameId: loadFirstImageId()))
         }
         
         WindowGroup(id: "photo-frame", for: String.self) { $uuid in
-            FrameView(viewModel: FrameModel(windowName: uuid))
+            FrameView(viewModel: FrameModel(frameId: uuid ?? UUID().uuidString))
         }
     }
     
-    private func loadImageIndex() -> String {
+    private func loadFirstImageId() -> String {
         if let imageIndex = UserDefaults.standard.array(forKey: "PictureFrameIndex") as? [String], !imageIndex.isEmpty {
             return imageIndex[0]
         } else {
