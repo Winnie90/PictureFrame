@@ -8,20 +8,12 @@
 import SwiftUI
 import PhotosUI
 
-struct ContentView: View {
-    @StateObject var viewModel = ProfileModel(windowName: "1")
-    
-    var body: some View {
-        EditableFrameImage(viewModel: viewModel)
-    }
-}
-
-struct EditableFrameImage: View {
+struct FrameView: View {
     @Environment(\.openWindow) private var openWindow
-    @ObservedObject var viewModel: ProfileModel
+    @StateObject var viewModel: FrameModel
     
     var body: some View {
-        FrameImage(profileModel: viewModel)
+        FrameImage(frameModel: viewModel)
             .toolbar {
                 ToolbarItem(placement: .bottomOrnament) {
                     PhotosPicker(selection: $viewModel.imageSelection,
@@ -34,7 +26,7 @@ struct EditableFrameImage: View {
                 }
                 ToolbarItem(placement: .bottomOrnament) {
                     Button {
-                        openWindow(id: "photo-frame")
+                        openWindow(id: "photo-frame", value: viewModel.nextImage())
                     } label: {
                         Image(systemName: "photo.badge.plus.fill")
                             .font(.system(size: 28))
@@ -45,39 +37,31 @@ struct EditableFrameImage: View {
 }
 
 struct FrameImage: View {
-    let profileModel: ProfileModel
+    @ObservedObject var frameModel: FrameModel
     
     var body: some View {
-        PickerImage(profileModel: profileModel)
-            .scaledToFill()
-    }
-}
-
-struct PickerImage: View {
-    @ObservedObject var profileModel: ProfileModel
-    
-    var body: some View {
-        switch profileModel.imageState {
+        switch frameModel.imageState {
         case .success(let image):
-            image.resizable()
+            image
+                .resizable()
+                .scaledToFill()
         case .loading:
             ProgressView()
         case .empty:
-            PhotosPicker(selection: $profileModel.imageSelection,
-                         matching: .images,
-                         photoLibrary: .shared()) {
-                Image(systemName: "pencil.circle.fill")
-                    .font(.system(size: 30))
+            VStack {
+                PhotosPicker(selection: $frameModel.imageSelection,
+                             matching: .images,
+                             photoLibrary: .shared()) {
+                    Image(systemName: "pencil.circle.fill")
+                        .font(.system(size: 30))
+                }
+                .buttonStyle(.borderless)
+                Text("Please select a photo.")
             }
-            .buttonStyle(.borderless)
         case .failure:
             Image(systemName: "exclamationmark.triangle.fill")
-                .font(.system(size: 40))
+                .font(.system(size: 30))
                 .foregroundColor(.white)
         }
     }
-}
-
-#Preview(windowStyle: .automatic) {
-    ContentView()
 }

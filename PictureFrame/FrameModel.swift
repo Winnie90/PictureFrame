@@ -4,7 +4,7 @@ import PhotosUI
 import CoreTransferable
 
 @MainActor
-class ProfileModel: ObservableObject {
+class FrameModel: ObservableObject {
     
     // MARK: - Profile Image
     
@@ -48,27 +48,47 @@ class ProfileModel: ObservableObject {
     
     private let windowName: String
     
-    init(windowName: String) {
-        self.windowName = windowName
+    init(windowName: String?) {
+        self.windowName = windowName ?? UUID().uuidString
         if let image = loadImage() {
             imageState = .success(Image(uiImage: image))
         }
     }
     
+    func nextImage() -> String {
+        let imageIndex = loadImageIndex()
+        guard let currentIndex = imageIndex.firstIndex(of: windowName), let nextIndex = imageIndex[safe: currentIndex + 1] else { return UUID().uuidString }
+        return nextIndex
+    }
+    
+    // MARK: - Private Methods
+    
     private func saveImage(image: Image) {
         guard let uiImage = image.getUIImage(),
               let data = uiImage.jpegData(compressionQuality: 1.0) else { return }
         let encoded = try! PropertyListEncoder().encode(data)
-        UserDefaults.standard.set(encoded, forKey: "PictureFrame-\(windowName)")
+        
+        let pictureName = "PictureFrame-\(windowName)"
+        UserDefaults.standard.set(encoded, forKey: pictureName)
+        
+        var imageIndexes = loadImageIndex()
+        imageIndexes.append(pictureName)
+        save(imageIndexes)
     }
     
     private func loadImage() -> UIImage? {
-        guard let data = UserDefaults.standard.data(forKey: "PictureFrame-\(windowName)") else { return nil }
+        guard let data = UserDefaults.standard.data(forKey: windowName) else { return nil }
         let decoded = try! PropertyListDecoder().decode(Data.self, from: data)
         return UIImage(data: decoded)
     }
     
-    // MARK: - Private Methods
+    private func loadImageIndex() -> [String] {
+        UserDefaults.standard.array(forKey: "PictureFrameIndex") as? [String] ?? []
+    }
+    
+    private func save(_ imageIndexes: [String]) {
+        UserDefaults.standard.setValue(imageIndexes, forKey: "PictureFrameIndex")
+    }
     
     private func loadTransferable(from imageSelection: PhotosPickerItem) -> Progress {
         return imageSelection.loadTransferable(type: ProfileImage.self) { result in
@@ -98,5 +118,13 @@ extension Image {
             .scaledToFill()
             .clipped()
         return ImageRenderer(content: image).uiImage
+    }
+}
+
+extension Collection {
+    
+    /// Returns the element at the specified index if it is within bounds, otherwise nil.
+    public subscript (safe index: Index) -> Iterator.Element? {
+        return indices.contains(index) ? self[index] : nil
     }
 }
