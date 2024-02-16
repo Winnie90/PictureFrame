@@ -6,12 +6,6 @@ import CoreTransferable
 @MainActor
 class ProfileModel: ObservableObject {
     
-    // MARK: - Profile Details
-    
-    @Published var firstName: String = ""
-    @Published var lastName: String = ""
-    @Published var aboutMe: String = ""
-    
     // MARK: - Profile Image
     
     enum ImageState {
@@ -30,21 +24,11 @@ class ProfileModel: ObservableObject {
         
         static var transferRepresentation: some TransferRepresentation {
             DataRepresentation(importedContentType: .image) { data in
-            #if canImport(AppKit)
-                guard let nsImage = NSImage(data: data) else {
-                    throw TransferError.importFailed
-                }
-                let image = Image(nsImage: nsImage)
-                return ProfileImage(image: image)
-            #elseif canImport(UIKit)
                 guard let uiImage = UIImage(data: data) else {
                     throw TransferError.importFailed
                 }
                 let image = Image(uiImage: uiImage)
                 return ProfileImage(image: image)
-            #else
-                throw TransferError.importFailed
-            #endif
             }
         }
     }
@@ -62,6 +46,28 @@ class ProfileModel: ObservableObject {
         }
     }
     
+    private let windowName: String
+    
+    init(windowName: String) {
+        self.windowName = windowName
+        if let image = loadImage() {
+            imageState = .success(Image(uiImage: image))
+        }
+    }
+    
+    private func saveImage(image: Image) {
+        guard let uiImage = image.getUIImage(),
+              let data = uiImage.jpegData(compressionQuality: 1.0) else { return }
+        let encoded = try! PropertyListEncoder().encode(data)
+        UserDefaults.standard.set(encoded, forKey: "PictureFrame-\(windowName)")
+    }
+    
+    private func loadImage() -> UIImage? {
+        guard let data = UserDefaults.standard.data(forKey: "PictureFrame-\(windowName)") else { return nil }
+        let decoded = try! PropertyListDecoder().decode(Data.self, from: data)
+        return UIImage(data: decoded)
+    }
+    
     // MARK: - Private Methods
     
     private func loadTransferable(from imageSelection: PhotosPickerItem) -> Progress {
@@ -73,6 +79,7 @@ class ProfileModel: ObservableObject {
                 }
                 switch result {
                 case .success(let profileImage?):
+                    self.saveImage(image: profileImage.image)
                     self.imageState = .success(profileImage.image)
                 case .success(nil):
                     self.imageState = .empty
@@ -81,5 +88,15 @@ class ProfileModel: ObservableObject {
                 }
             }
         }
+    }
+}
+
+extension Image {
+    @MainActor
+    func getUIImage() -> UIImage? {
+        let image = resizable()
+            .scaledToFill()
+            .clipped()
+        return ImageRenderer(content: image).uiImage
     }
 }

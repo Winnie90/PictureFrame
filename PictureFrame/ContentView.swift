@@ -9,7 +9,7 @@ import SwiftUI
 import PhotosUI
 
 struct ContentView: View {
-    @StateObject var viewModel = ProfileModel()
+    @StateObject var viewModel = ProfileModel(windowName: "1")
     
     var body: some View {
         EditableFrameImage(viewModel: viewModel)
@@ -28,7 +28,7 @@ struct EditableFrameImage: View {
                                  matching: .images,
                                  photoLibrary: .shared()) {
                         Image(systemName: "pencil.circle.fill")
-                            .font(.system(size: 30))
+                            .font(.system(size: 28))
                     }
                     .buttonStyle(.borderless)
                 }
@@ -37,7 +37,7 @@ struct EditableFrameImage: View {
                         openWindow(id: "photo-frame")
                     } label: {
                         Image(systemName: "photo.badge.plus.fill")
-                            .font(.system(size: 30))
+                            .font(.system(size: 28))
                     }
                 }
             }
