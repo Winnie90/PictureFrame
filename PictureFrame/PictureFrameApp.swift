@@ -10,7 +10,7 @@ import SwiftUI
 @main
 struct PictureFrameApp: App {
     var body: some Scene {
-        WindowGroup {
+        WindowGroup(id: "photo-frame") {
             ContentView()
         }
     }

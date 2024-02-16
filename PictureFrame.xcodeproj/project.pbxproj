@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		83E649E92B7F825F00EB0A43 /* RealityKitContent in Frameworks */ = {isa = PBXBuildFile; productRef = 83E649E82B7F825F00EB0A43 /* RealityKitContent */; };
 		83E649EB2B7F825F00EB0A43 /* PictureFrameApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E649EA2B7F825F00EB0A43 /* PictureFrameApp.swift */; };
 		83E649ED2B7F825F00EB0A43 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E649EC2B7F825F00EB0A43 /* ContentView.swift */; };
 		83E649EF2B7F826100EB0A43 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83E649EE2B7F826100EB0A43 /* Assets.xcassets */; };
 		83E649F22B7F826100EB0A43 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83E649F12B7F826100EB0A43 /* Preview Assets.xcassets */; };
 		83E649FD2B7F826100EB0A43 /* PictureFrameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E649FC2B7F826100EB0A43 /* PictureFrameTests.swift */; };
+		83E64A072B7F844600EB0A43 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E64A062B7F844600EB0A43 /* ProfileModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -27,7 +27,6 @@
 
 /* Begin PBXFileReference section */
 		83E649E32B7F825E00EB0A43 /* PictureFrame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PictureFrame.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		83E649E72B7F825F00EB0A43 /* RealityKitContent */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RealityKitContent; sourceTree = "<group>"; };
 		83E649EA2B7F825F00EB0A43 /* PictureFrameApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PictureFrameApp.swift; sourceTree = "<group>"; };
 		83E649EC2B7F825F00EB0A43 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		83E649EE2B7F826100EB0A43 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -35,6 +34,7 @@
 		83E649F32B7F826100EB0A43 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		83E649F82B7F826100EB0A43 /* PictureFrameTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PictureFrameTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		83E649FC2B7F826100EB0A43 /* PictureFrameTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PictureFrameTests.swift; sourceTree = "<group>"; };
+		83E64A062B7F844600EB0A43 /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,7 +42,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				83E649E92B7F825F00EB0A43 /* RealityKitContent in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,6 +82,7 @@
 				83E649EE2B7F826100EB0A43 /* Assets.xcassets */,
 				83E649F32B7F826100EB0A43 /* Info.plist */,
 				83E649F02B7F826100EB0A43 /* Preview Content */,
+				83E64A062B7F844600EB0A43 /* ProfileModel.swift */,
 			);
 			path = PictureFrame;
 			sourceTree = "<group>";
@@ -90,7 +90,6 @@
 		83E649E62B7F825E00EB0A43 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				83E649E72B7F825F00EB0A43 /* RealityKitContent */,
 			);
 			path = Packages;
 			sourceTree = "<group>";
@@ -128,7 +127,6 @@
 			);
 			name = PictureFrame;
 			packageProductDependencies = (
-				83E649E82B7F825F00EB0A43 /* RealityKitContent */,
 			);
 			productName = PictureFrame;
 			productReference = 83E649E32B7F825E00EB0A43 /* PictureFrame.app */;
@@ -214,6 +212,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				83E64A072B7F844600EB0A43 /* ProfileModel.swift in Sources */,
 				83E649ED2B7F825F00EB0A43 /* ContentView.swift in Sources */,
 				83E649EB2B7F825F00EB0A43 /* PictureFrameApp.swift in Sources */,
 			);
@@ -482,13 +481,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		83E649E82B7F825F00EB0A43 /* RealityKitContent */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = RealityKitContent;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 83E649DB2B7F825E00EB0A43 /* Project object */;
 }
