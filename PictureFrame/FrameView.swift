@@ -14,25 +14,38 @@ struct FrameView: View {
     
     var body: some View {
         FrameImage(frameModel: viewModel)
+            .onAppear {
+                if let uuid = viewModel.nextImage() {
+                    openWindow(id: "photo-frame", value: uuid)
+                }
+            }
             .toolbar {
                 ToolbarItem(placement: .bottomOrnament) {
-                    PhotosPicker(selection: $viewModel.imageSelection,
-                                 matching: .images,
-                                 photoLibrary: .shared()) {
-                        Image(systemName: "pencil.circle.fill")
-                            .font(.system(size: 28))
-                    }
-                    .buttonStyle(.borderless)
+                    PhotoPicker(viewModel: viewModel)
                 }
                 ToolbarItem(placement: .bottomOrnament) {
                     Button {
-                        openWindow(id: "photo-frame", value: viewModel.nextImage())
+                        openWindow(id: "photo-frame", value: UUID().uuidString)
                     } label: {
                         Image(systemName: "photo.badge.plus.fill")
                             .font(.system(size: 28))
-                    }
+                    }.disabled(viewModel.nextImage() != nil)
                 }
             }
+    }
+}
+
+struct PhotoPicker: View {
+    @StateObject var viewModel: FrameModel
+    
+    var body: some View {
+        PhotosPicker(selection: $viewModel.imageSelection,
+                     matching: .images,
+                     photoLibrary: .shared()) {
+            Image(systemName: "pencil.circle.fill")
+                .font(.system(size: 28))
+        }
+        .buttonStyle(.borderless)
     }
 }
 
@@ -49,13 +62,7 @@ struct FrameImage: View {
             ProgressView()
         case .empty:
             VStack {
-                PhotosPicker(selection: $frameModel.imageSelection,
-                             matching: .images,
-                             photoLibrary: .shared()) {
-                    Image(systemName: "pencil.circle.fill")
-                        .font(.system(size: 30))
-                }
-                .buttonStyle(.borderless)
+                PhotoPicker(viewModel: frameModel)
                 Text("Please select a photo.")
             }
         case .failure:

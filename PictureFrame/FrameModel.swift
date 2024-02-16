@@ -55,9 +55,9 @@ class FrameModel: ObservableObject {
         }
     }
     
-    func nextImage() -> String {
+    func nextImage() -> String? {
         let imageIndex = loadImageIndex()
-        guard let currentIndex = imageIndex.firstIndex(of: windowName), let nextIndex = imageIndex[safe: currentIndex + 1] else { return UUID().uuidString }
+        guard let currentIndex = imageIndex.firstIndex(of: windowName), let nextIndex = imageIndex[safe: currentIndex + 1] else { return nil }
         return nextIndex
     }
     
