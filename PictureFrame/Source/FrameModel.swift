@@ -48,7 +48,7 @@ class FrameModel: ObservableObject {
     private let frameId: String
     
     var nextFrameId: String? {
-        let imageIndex = loadImageIndex()
+        let imageIndex = loadImageIndex().sorted()
         guard let currentIndex = imageIndex.firstIndex(of: frameId), let nextIndex = imageIndex[safe: currentIndex + 1] else { return nil }
         return nextIndex
     }

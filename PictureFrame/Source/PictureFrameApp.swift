@@ -21,7 +21,7 @@ struct PictureFrameApp: App {
     
     private func loadFirstImageId() -> String {
         if let imageIndex = UserDefaults.standard.array(forKey: "PictureFrameIndex") as? [String], !imageIndex.isEmpty {
-            return imageIndex[0]
+            return imageIndex.sorted()[0]
         } else {
             return UUID().uuidString
         }
