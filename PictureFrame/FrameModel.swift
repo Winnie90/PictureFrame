@@ -7,7 +7,6 @@ import CoreTransferable
 class FrameModel: ObservableObject {
     
     // MARK: - Profile Image
-    
     enum ImageState {
         case empty
         case loading(Progress)
@@ -48,6 +47,12 @@ class FrameModel: ObservableObject {
     
     private let frameId: String
     
+    var nextFrameId: String? {
+        let imageIndex = loadImageIndex()
+        guard let currentIndex = imageIndex.firstIndex(of: frameId), let nextIndex = imageIndex[safe: currentIndex + 1] else { return nil }
+        return nextIndex
+    }
+    
     init(frameId: String) {
         self.frameId = frameId
         if let image = loadImage() {
@@ -55,13 +60,7 @@ class FrameModel: ObservableObject {
         }
     }
     
-    var nextImageId: String? {
-        let imageIndex = loadImageIndex()
-        guard let currentIndex = imageIndex.firstIndex(of: frameId), let nextIndex = imageIndex[safe: currentIndex + 1] else { return nil }
-        return nextIndex
-    }
-    
-    func closeImage() {
+    func closeFrame() {
         deleteImage()
     }
     
@@ -120,23 +119,5 @@ class FrameModel: ObservableObject {
                 }
             }
         }
-    }
-}
-
-extension Image {
-    @MainActor
-    func getUIImage() -> UIImage? {
-        let image = resizable()
-            .scaledToFill()
-            .clipped()
-        return ImageRenderer(content: image).uiImage
-    }
-}
-
-extension Collection {
-    
-    /// Returns the element at the specified index if it is within bounds, otherwise nil.
-    public subscript (safe index: Index) -> Iterator.Element? {
-        return indices.contains(index) ? self[index] : nil
     }
 }

@@ -15,26 +15,35 @@ struct FrameView: View {
     var body: some View {
         FrameImage(frameModel: viewModel)
             .onAppear {
-                if let uuid = viewModel.nextImageId {
+                if let uuid = viewModel.nextFrameId {
                     openWindow(id: "photo-frame", value: uuid)
                 }
+            }
+            .onDisappear {
+                viewModel.closeFrame()
             }
             .toolbar {
                 ToolbarItem(placement: .bottomOrnament) {
                     PhotoPicker(viewModel: viewModel)
                 }
                 ToolbarItem(placement: .bottomOrnament) {
-                    Button {
-                        openWindow(id: "photo-frame", value: UUID().uuidString)
-                    } label: {
-                        Image(systemName: "photo.badge.plus.fill")
-                            .font(.system(size: 28))
-                    }
+                   NewFrameButton()
                 }
             }
-            .onDisappear {
-                viewModel.closeImage()
-            }
+            
+    }
+}
+
+struct NewFrameButton: View {
+    @Environment(\.openWindow) private var openWindow
+    var body: some View {
+        Button {
+            openWindow(id: "photo-frame", value: UUID().uuidString)
+        } label: {
+            Image(systemName: "photo.badge.plus.fill")
+                .font(.system(size: 28))
+        }
+        .accessibilityLabel("Open new frame")
     }
 }
 
@@ -49,6 +58,8 @@ struct PhotoPicker: View {
                 .font(.system(size: 28))
         }
         .buttonStyle(.borderless)
+        .accessibilityLabel("Edit photo")
+        .accessibilityValue("Opens your photo library to select a photo")
     }
 }
 
@@ -67,10 +78,11 @@ struct FrameImage: View {
             VStack {
                 PhotoPicker(viewModel: frameModel)
                 Text("Please select a photo.")
+                    .font(.headline)
             }
         case .failure:
             Image(systemName: "exclamationmark.triangle.fill")
-                .font(.system(size: 30))
+                .font(.system(size: 28))
                 .foregroundColor(.white)
         }
     }
