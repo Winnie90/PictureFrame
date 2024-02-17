@@ -46,22 +46,12 @@ class FrameModel: ObservableObject {
         }
     }
     
-    @Published var nextImage: Bool = true
     private let frameId: String
     
     init(frameId: String) {
         self.frameId = frameId
         if let image = loadImage() {
             imageState = .success(Image(uiImage: image))
-        }
-        NotificationCenter.default.addObserver(self, selector: #selector(defaultsChanged), name: UserDefaults.didChangeNotification, object: nil)
-    }
-    
-    @objc func defaultsChanged() {
-        if nextImageId != nil {
-            nextImage = true
-        } else {
-            nextImage = false
         }
     }
     

@@ -29,7 +29,7 @@ struct FrameView: View {
                     } label: {
                         Image(systemName: "photo.badge.plus.fill")
                             .font(.system(size: 28))
-                    }.disabled(viewModel.nextImageId != nil)
+                    }
                 }
             }
             .onDisappear {
